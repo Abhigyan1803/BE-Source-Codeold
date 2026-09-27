@@ -1,5 +1,8 @@
 package com.example.demo.config;
 
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -55,6 +58,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new JwtRequestFilter();
 	}
 
+	@Bean
+public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+
+    configuration.setAllowedOrigins(java.util.Arrays.asList("http://localhost:4200"));
+    configuration.setAllowedMethods(java.util.Arrays.asList(
+            "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"
+    ));
+    configuration.setAllowedHeaders(java.util.Arrays.asList("*"));
+    configuration.setAllowCredentials(true);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+
+    return source;
+}
+
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		// We don't need CSRF for this example
@@ -62,6 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		httpSecurity.cors().and().csrf().disable()
 				// dont authenticate this particular request
 				.authorizeRequests()
+                                .antMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
 				.antMatchers( "/api/academy-parade-state/get-parade-state-list","/hello", "/admin/login", "/user/login",
 						"/cadet/login", "/edossier/login", "/staff/login",
 						"/user/add-user", "/admin/addAdmin", "/api/dailyPrgmController/getTodaysPrograme",
