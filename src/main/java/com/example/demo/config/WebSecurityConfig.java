@@ -68,6 +68,7 @@ public CorsConfigurationSource corsConfigurationSource() {
     ));
     configuration.setAllowedHeaders(java.util.Arrays.asList("*"));
     configuration.setAllowCredentials(true);
+    configuration.setExposedHeaders(java.util.Arrays.asList("Content-Disposition"));
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
